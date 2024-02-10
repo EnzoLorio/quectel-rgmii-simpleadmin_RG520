@@ -86,7 +86,7 @@ NR_SA=$(echo $OX | grep -o "+QENG: \"SERVINGCELL\",[^,]\+,\"NR5G-SA\",\"[DFT]\{3
 if [ -n "$NR_NSA" ]; then
 	QENG=",,"$(echo $OX" " | grep -o "+QENG: \"LTE\".\+\"NR5G-NSA\"," | tr " " ",")
 	if [ -z "$QENG5" ]; then
-		QENG5=$(echo $OX | grep -o "+QENG:[ ]\?\"NR5G-NSA\",[0-9]\{3\},[0-9]\{2,3\},[0-9]\{1,5\},-[0-9]\{2,3\},[-0-9]\{1,3\},-[0-9]\{2,3\}")
+		QENG5=$(echo $OX | grep -o "+QENG:[ ]\?\"NR5G-NSA\",[0-9]\{3\},[0-9]\{2,3\},[0-9]\{1,5\},-[0-9]\{2,3\},[-0-9]\{1,3\},-[0-9]\{2,3\},[^,]*,[^,]*,[^,]*")
 		if [ -n "$QENG5" ]; then
 			QENG5=$QENG5",,"
 		fi
