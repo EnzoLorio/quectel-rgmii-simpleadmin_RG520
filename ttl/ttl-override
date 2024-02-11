@@ -23,8 +23,12 @@ case "$1" in
 start)
     if (( $TTLVALUE > 0 )); then
         echo "Adding TTL override rules: "
-        iptables -t mangle -I POSTROUTING -o rmnet+ -j TTL --ttl-set ${TTLVALUE}
-        ip6tables -t mangle -I POSTROUTING -o rmnet+ -j HL --hl-set ${TTLVALUE}
+        iptables -t mangle -I POSTROUTING -o rmnet_data0 -j TTL --ttl-set ${TTLVALUE}
+        iptables -t mangle -I PREROUTING -i rmnet_data0 -j TTL --ttl-set ${TTLVALUE}
+        ip6tables -t mangle -I POSTROUTING -o rmnet_data0 -j HL --hl-set ${TTLVALUE}
+        ip6tables -t mangle -I PREROUTING -i rmnet_data0 -j HL --hl-set ${TTLVALUE}
+
+
     else
         echo "TTLVALUE set to 0, nothing to do..."
     fi
@@ -33,8 +37,10 @@ start)
   stop)
     if (( $TTLVALUE > 0 )); then
         echo "Removing TTL override rules: "
-        iptables -t mangle -D POSTROUTING -o rmnet+ -j TTL --ttl-set ${TTLVALUE} &>/dev/null || true
-        ip6tables -t mangle -D POSTROUTING -o rmnet+ -j HL --hl-set ${TTLVALUE} &>/dev/null || true
+        iptables -t mangle -D POSTROUTING -o rmnet_data0 -j TTL --ttl-set ${TTLVALUE} &>/dev/null || true
+        iptables -t mangle -D PREROUTING -i rmnet_data0 -j TTL --ttl-set ${TTLVALUE} &>/dev/null || true
+        ip6tables -t mangle -D POSTROUTING -o rmnet_data0 -j HL --hl-set ${TTLVALUE} &>/dev/null || true
+        ip6tables -t mangle -D PREROUTING -i rmnet_data0 -j HL --hl-set ${TTLVALUE} &>/dev/null || true
     else   
         echo "TTLVALUE set to 0, nothing to do..."
     fi

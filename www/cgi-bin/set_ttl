@@ -29,8 +29,10 @@ if [ -n "${setTTL}" ]; then
 
     # If TTL is still set manually remove values
     if [ !-z "${ttlcheck}" ]; then
-        iptables -t mangle -D POSTROUTING -o rmnet+ -j TTL --ttl-set ${ttlcheck} &>/dev/null || true
-        ip6tables -t mangle -D POSTROUTING -o rmnet+ -j HL --hl-set ${ttlcheck} &>/dev/null || true
+        iptables -t mangle -D POSTROUTING -o rmnet_data0 -j TTL --ttl-set ${TTLVALUE} &>/dev/null || true
+        iptables -t mangle -D PREROUTING -i rmnet_data0 -j TTL --ttl-set ${TTLVALUE} &>/dev/null || true
+        ip6tables -t mangle -D POSTROUTING -o rmnet_data0 -j HL --hl-set ${TTLVALUE} &>/dev/null || true
+        ip6tables -t mangle -D PREROUTING -i rmnet_data0 -j HL --hl-set ${TTLVALUE} &>/dev/null || true
     fi
 
     # Echo TTL to file
